@@ -1,0 +1,96 @@
+q2A db.books.find().limit(2)
+
+Q2B db.books.find({}).sort({author: 1,title:-1})
+
+Q3	db.books.aggregate({ "$project" : {
+"PublishedinMonth: ": {"$month": "$PublishedYear"}, "PublishedinDay: ": {"$dayOfMonth": "$PublishedYear"}, "PublishedinYear: ": {"$dayOfYear": "$PublishedYear"}
+}
+})
+
+db.books.aggregate({
+"$project" : { "PublishedinMonth: ": {"$month": "$PublishedYear"},
+"PublishedinDay: ": {"$dayOfMonth": "$PublishedYear"},
+"PublishedinYear: ": {"$dayOfYear": "$PublishedYear"} }
+})
+
+
+
+db.books.insertMany([
+{"BookID" : "111", "Book_Title" : "The Catcher in the Rye", "PublishedYear" : new Date("1977-03-2"), "AuthorName" : "J.D. Salinger", "NumofCopies" : "20"},
+{"BookID" : "222", "Book_Title" : "Nine Stories", "PublishedYear" : new Date("1981-04-20"), "AuthorName" : "F. Scott. Fitzgerald", "NumofCopies" : "60"},
+{"BookID" : "333", "Book_Title" : "Franny and Zooey", "PublishedYear" : new Date("1949-02-09"), "AuthorName" : "Jane Austen", "NumofCopies" : "70"},
+{"BookID" : "444", "Book_Title" : "The Great Gatsby", "PublishedYear" : new Date("1955-04-05"), "AuthorName" : "F. Scott. Fitzgerald", "NumofCopies" : "80"},
+ ])
+
+db.books.find({
+"NumofCopies": { $gte: 10, $lte: 20}},
+{"NumofCopies": 1,"Book Title": 1
+})
+
+db.books.replaceOne({Book_Title: "The Great Gatsby"},{"NumOfCopies": 100,"BookID":20})
+db.books.find({"BookID":20})
+
+
+
+db.books.aggregate({
+$group: { "_id":"$AutherName",
+"Mininmum: ":{"$min":"$NumofCopies"},
+"Maximum: ":{"$max":"$NumofCopies"},
+"average: ":{"$avg":"$NumofCopies"}}
+})
+
+
+
+SET SERVEROUTPUT ON;
+CREATE OR REPLACE PROCEDURE update_customercreditlimit
+(customerID customers.customer_id%type)  AS 
+namec customers.name%type;
+newCredit new_products.new_price%type;
+avg_cust number;
+CURSOR priceChange IS  
+SELECT AVG(credit_limit) INTO avg_cust FROM customers WHERE customerID = customer_id;
+BEGIN     
+OPEN priceChange;      
+LOOP      
+FETCH priceChange INTO prodid, listPrice;
+EXIT WHEN 
+priceChange%NOTFOUND;
+Case      
+when  credit_limit < avg_cust then       
+newCredit := credit_limit * 1.15;
+else   newCredit := credit_limit * 1.05;    
+end case;    
+DBMS_OUTPUT.PUT_LINE('name: ' || namec || ' credit limit: ' || newCredit) ;
+UPDATE customers 
+SET credit_limit = newCredit  WHERE customerID = customer_id;
+close priceChange;  
+END;
+
+
+
+set serveroutput on;
+
+create or replace PROCEDURE order_display (ooid IN NUMBER) AS
+    orderid NUMBER;
+    custid NUMBER;
+    cstatus VARCHAR2(50);
+    salesid NUMBER;
+    datee DATE;
+
+BEGIN
+
+SELECT order_id,customer_id,status,salesman_id,order_date 
+INTO orderid,custid,cstatus,salesid,datee
+FROM orders WHERE order_id = orid;
+
+        DBMS_OUTPUT.PUT_LINE ('Order_id: ' || orderid);
+        DBMS_OUTPUT.PUT_LINE ('Customer_iD: '|| custid);
+        DBMS_OUTPUT.PUT_LINE ('Status: '|| cstatus);
+        DBMS_OUTPUT.PUT_LINE ('Sales_id: '|| salesid);
+        DBMS_OUTPUT.PUT_LINE ('Date: '|| datee);
+
+EXCEPTION
+    WHEN OTHERS
+    THEN
+        DBMS_OUTPUT.PUT_LINE ('Error!');
+END order_display;

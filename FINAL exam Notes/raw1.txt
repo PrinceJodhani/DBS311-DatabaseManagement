@@ -1,0 +1,6 @@
+db.books.insertMany([
+{"BookID" : 111, "Book_Title" : "The Catcher in the Rye", "PublishedYear" : new Date("1977-03-2"), "AuthorName" : "J.D. Salinger", "NumofCopies" : 20},
+{"BookID" : 222, "Book_Title" : "Nine Stories", "PublishedYear" : new Date("1981-04-20"), "AuthorName" : "F. Scott. Fitzgerald", "NumofCopies" : 60},
+{"BookID" : 333, "Book_Title" : "Franny and Zooey", "PublishedYear" : new Date("1949-02-09"), "AuthorName" : "Jane Austen", "NumofCopies" : 70},
+{"BookID" : 444, "Book_Title" : "The Great Gatsby", "PublishedYear" : new Date("1955-04-05"), "AuthorName" : "F. Scott. Fitzgerald", "NumofCopies" : 80},
+ ])
